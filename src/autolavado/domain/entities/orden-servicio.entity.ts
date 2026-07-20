@@ -1,4 +1,4 @@
-import { RepartoServicio } from '../value-objects/reparto-servicio.vo';
+import { RepartoServicio } from './../value-objects/reparto-servicio.vo';
 
 export enum EstadoPago {
   PENDIENTE = 'PENDIENTE',
