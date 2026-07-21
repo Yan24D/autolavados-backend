@@ -10,6 +10,10 @@ import { ServicioRepositoryPort } from '../domain/ports/servicio.repository.port
 import { UsuarioRepositoryPort } from '../domain/ports/usuario.repository.port';
 import { ConfiguracionLavaderoRepositoryPort } from '../domain/ports/configuracion-lavadero.repository.port';
 import { OrdenServicioController } from './http/orden-servicio.controller';
+import { CrearUsuarioUseCase } from '../application/crear-usuario.use-case';
+import { UsuarioController } from './http/usuario.controller';
+import { CrearServicioUseCase } from '../application/crear-servicio.use-case';
+import { ServicioController } from './http/servicio.controller';
 
 export const ORDEN_SERVICIO_REPOSITORY = 'ORDEN_SERVICIO_REPOSITORY';
 export const USUARIO_REPOSITORY = 'USUARIO_REPOSITORY';
@@ -18,7 +22,7 @@ export const CONFIGURACION_LAVADERO_REPOSITORY =
   'CONFIGURACION_LAVADERO_REPOSITORY';
 
 @Module({
-  controllers: [OrdenServicioController],
+  controllers: [OrdenServicioController, UsuarioController, ServicioController],
   providers: [
     {
       provide: ORDEN_SERVICIO_REPOSITORY,
@@ -66,7 +70,25 @@ export const CONFIGURACION_LAVADERO_REPOSITORY =
         new ConsultarComisionesDiariasUseCase(ordenRepo, usuarioRepo),
       inject: [ORDEN_SERVICIO_REPOSITORY, USUARIO_REPOSITORY],
     },
+    {
+      provide: CrearUsuarioUseCase,
+      useFactory: (usuarioRepo: UsuarioRepositoryPort): CrearUsuarioUseCase =>
+        new CrearUsuarioUseCase(usuarioRepo),
+      inject: [USUARIO_REPOSITORY],
+    },
+    {
+      provide: CrearServicioUseCase,
+      useFactory: (
+        servicioRepo: ServicioRepositoryPort,
+      ): CrearServicioUseCase => new CrearServicioUseCase(servicioRepo),
+      inject: [SERVICIO_REPOSITORY],
+    },
   ],
-  exports: [CrearOrdenServicioUseCase, ConsultarComisionesDiariasUseCase],
+  exports: [
+    CrearOrdenServicioUseCase,
+    ConsultarComisionesDiariasUseCase,
+    CrearUsuarioUseCase,
+    CrearServicioUseCase,
+  ],
 })
 export class AutolavadoModule {}
